@@ -2,7 +2,8 @@ package com.example.demo.imageretrieval.serviceImp;
 
 import com.example.demo.imageretrieval.entity.RetrievalResultInfo;
 import com.example.demo.imageretrieval.service.GetRetrievalResultByUploadService;
-import com.example.demo.imageretrieval.entity.ImageInfo;
+import com.example.demo.imageretrieval.service.ImageInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +18,12 @@ import java.util.List;
 @Service
 public class GetRetrievalResultServiceByUploadImp implements GetRetrievalResultByUploadService {
     private MultipartFile file;
+    private ImageInfoService imageInfoService;
+
+    @Autowired
+    public GetRetrievalResultServiceByUploadImp(ImageInfoService imageInfoService) {
+        this.imageInfoService = imageInfoService;
+    }
 
     public void setFile(MultipartFile file) {
         this.file = file;
@@ -41,27 +48,18 @@ public class GetRetrievalResultServiceByUploadImp implements GetRetrievalResultB
     @Override
     public RetrievalResultInfo getRetrievalResultInfo() {
         RetrievalResultInfo retrievalResultInfo = new RetrievalResultInfo();
-        List<ImageInfo> imageInfos = new ArrayList<>();
         List<String> tagInfos = new ArrayList<>();
-        File directory = new File("D:\\workspace\\image-retrieval-backend\\src\\main\\resources\\static\\images");
-        String[] fileList = directory.list();
-        for (int i = 0; i < fileList.length; i++) {
-            ImageInfo imageInfo = new ImageInfo();
-            imageInfo.setId(i);
-            imageInfo.setImageName(fileList[i]);
-            imageInfos.add(imageInfo);
-        }
-        tagInfos.add("测试1");
-        tagInfos.add("测试2");
-        tagInfos.add("测试3");
-        retrievalResultInfo.setImageInfos(imageInfos);
+        tagInfos.add("施工现场");
+        tagInfos.add("人员");
+//        tagInfos.add("测试3");
+        retrievalResultInfo.setImageInfos(imageInfoService.getImageInfoList());
         retrievalResultInfo.setTagInfos(tagInfos);
         return retrievalResultInfo;
     }
 
     @Override
     public ResponseEntity<byte[]> getImg(String imgName) throws FileNotFoundException {
-        InputStream inputStream = new FileInputStream(new File("D:\\workspace\\image-retrieval-backend\\src\\main\\resources\\static\\images\\" + imgName));
+        InputStream inputStream = new FileInputStream(new File("D:\\PyCharm-workspace\\RetrievalTest\\result\\result-ADCH-Project-20-08-24-11-16-40\\9ZPDAVYEO42_IMG_8542\\" + imgName));
         byte[] bytesByStream = getBytesByStream(inputStream);
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG);

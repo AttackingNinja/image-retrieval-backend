@@ -2,7 +2,9 @@ package com.example.demo.imageretrieval.entity;
 
 public class ImageInfo {
     private int id;
-    private String imageName;
+    private String image_name;
+    private int width;
+    private int height;
 
     public int getId() {
         return id;
@@ -12,11 +14,27 @@ public class ImageInfo {
         this.id = id;
     }
 
-    public String getImageName() {
-        return imageName;
+    public String getImage_name() {
+        return image_name;
     }
 
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+    public void setImage_name(String image_name) {
+        this.image_name = image_name;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 }
