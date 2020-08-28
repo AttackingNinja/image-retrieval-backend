@@ -5,7 +5,6 @@ import com.example.demo.imageretrieval.service.GetRetrievalResultByUploadService
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 
@@ -19,13 +18,12 @@ public class ImageRetrievalUploadController {
         this.getRetrievalResultByUploadService = getRetrievalResultByUploadService;
     }
 
-    @PostMapping("/image-retrieval-upload")
-    public RetrievalResultInfo handleImageRetrievalUpload(@RequestParam("file") MultipartFile file) throws FileNotFoundException {
-        getRetrievalResultByUploadService.setFile(file);
-        return getRetrievalResultByUploadService.getRetrievalResultInfo();
+    @GetMapping("/get-result-info")
+    public RetrievalResultInfo handleImageRetrievalUpload(@RequestParam("hashcode") String hashcode) {
+        return getRetrievalResultByUploadService.getRetrievalResultInfo(hashcode);
     }
 
-    @GetMapping("/image-retrieval-upload")
+    @GetMapping("/get-result-image")
     public ResponseEntity<byte[]> handleGetImage(@RequestParam(value = "imageName") String imageName) throws FileNotFoundException {
         return getRetrievalResultByUploadService.getImg(imageName);
     }
