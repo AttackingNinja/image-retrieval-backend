@@ -19,8 +19,8 @@ public class ImageRetrievalUploadController {
     }
 
     @GetMapping("/get-result-info")
-    public RetrievalResultInfo handleImageRetrievalUpload(@RequestParam("hashcode") String hashcode) {
-        return getRetrievalResultByUploadService.getRetrievalResultInfo(hashcode);
+    public RetrievalResultInfo handleImageRetrievalUpload(@RequestParam("hashcode") String hashcode, @RequestParam("origincode") String origincode) {
+        return getRetrievalResultByUploadService.getRetrievalResultInfo(hashcode, origincode);
     }
 
     @GetMapping("/get-result-image")

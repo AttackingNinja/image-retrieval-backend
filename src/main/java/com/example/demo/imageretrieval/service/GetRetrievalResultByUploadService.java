@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import java.io.FileNotFoundException;
 
 public interface GetRetrievalResultByUploadService {
-    RetrievalResultInfo getRetrievalResultInfo(String hashcode);
+    RetrievalResultInfo getRetrievalResultInfo(String hashcode, String origincode);
 
     ResponseEntity<byte[]> getImg(String imgName) throws FileNotFoundException;
 }

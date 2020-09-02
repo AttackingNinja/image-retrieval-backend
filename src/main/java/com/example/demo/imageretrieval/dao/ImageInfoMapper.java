@@ -31,22 +31,22 @@ public interface ImageInfoMapper {
     @Select("select distinct subcode6 from image.image_code")
     List<String> getDistinctSubcode6();
 
-    @Select("select id, hashcode from image.image_code where subcode1 = #{targetSubcode}")
+    @Select("select id, hashcode, origincode from image.image_code where subcode1 = #{targetSubcode}")
     List<CodeInfo> getCodeInfo1(String targetSubcode);
 
-    @Select("select id, hashcode from image.image_code where subcode2 = #{targetSubcode}")
+    @Select("select id, hashcode, origincode from image.image_code where subcode2 = #{targetSubcode}")
     List<CodeInfo> getCodeInfo2(String targetSubcode);
 
-    @Select("select id, hashcode from image.image_code where subcode3 = #{targetSubcode}")
+    @Select("select id, hashcode, origincode from image.image_code where subcode3 = #{targetSubcode}")
     List<CodeInfo> getCodeInfo3(String targetSubcode);
 
-    @Select("select id, hashcode from image.image_code where subcode4 = #{targetSubcode}")
+    @Select("select id, hashcode, origincode from image.image_code where subcode4 = #{targetSubcode}")
     List<CodeInfo> getCodeInfo4(String targetSubcode);
 
-    @Select("select id, hashcode from image.image_code where subcode5 = #{targetSubcode}")
+    @Select("select id, hashcode, origincode from image.image_code where subcode5 = #{targetSubcode}")
     List<CodeInfo> getCodeInfo5(String targetSubcode);
 
-    @Select("select id, hashcode from image.image_code where subcode6 = #{targetSubcode}")
+    @Select("select id, hashcode, origincode from image.image_code where subcode6 = #{targetSubcode}")
     List<CodeInfo> getCodeInfo6(String targetSubcode);
 }
 

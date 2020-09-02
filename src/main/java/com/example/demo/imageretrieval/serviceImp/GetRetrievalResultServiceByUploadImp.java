@@ -13,10 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class GetRetrievalResultServiceByUploadImp implements GetRetrievalResultByUploadService {
@@ -43,8 +40,26 @@ public class GetRetrievalResultServiceByUploadImp implements GetRetrievalResultB
         return null;
     }
 
+    private int calcHammingDistance(String subcode1, String subcode2) {
+        int subcodeInt1 = Integer.parseInt(subcode1, 2);
+        int subcodeInt2 = Integer.parseInt(subcode2, 2);
+        return Integer.bitCount(subcodeInt1 ^ subcodeInt2);
+    }
+
+    private double calcEuclidDistance(String origincode1, String origincode2) {
+        String[] continuousBits1S = origincode1.split(",");
+        String[] continuousBits2S = origincode2.split(" ");
+        double squareSum = 0.0;
+        for (int i = 0; i < 48; i++) {
+            double param1 = Double.parseDouble(continuousBits1S[i]);
+            double param2 = Double.parseDouble(continuousBits2S[i]);
+            squareSum += Math.pow(param1 - param2, 2.0);
+        }
+        return Math.sqrt(squareSum);
+    }
+
     @Override
-    public RetrievalResultInfo getRetrievalResultInfo(String hashcode) {
+    public RetrievalResultInfo getRetrievalResultInfo(String hashcode, String origincode) {
         List<List<String>> subcodes = new ArrayList<>();
         List<List<String>> targetSubcodes = new ArrayList<>();
         subcodes.add(imageInfoService.getDistinctSubcode1());
@@ -55,24 +70,18 @@ public class GetRetrievalResultServiceByUploadImp implements GetRetrievalResultB
         subcodes.add(imageInfoService.getDistinctSubcode6());
         for (int i = 0; i < 6; i++) {
             String subHashcode = hashcode.substring(i * 8, i * 8 + 8);
-            int subHashcodeInt = Integer.parseInt(subHashcode, 2);
             List<String> curTargetSubcodes = new ArrayList<>();
             for (int j = 0; j < subcodes.get(i).size(); j++) {
-                int subCodeInt = Integer.parseInt(subcodes.get(i).get(j), 2);
-                int hamming = subHashcodeInt ^ subCodeInt;
-                int cnt = 0;
-                while (hamming > 0) {
-                    hamming = hamming & (hamming - 1);
-                    cnt++;
-                }
-                if (cnt <= 1) {
+                int hammingDist = calcHammingDistance(subHashcode, subcodes.get(i).get(j));
+                if (hammingDist <= 1) {
                     curTargetSubcodes.add(subcodes.get(i).get(j));
                 }
             }
             targetSubcodes.add(curTargetSubcodes);
         }
         LinkedHashSet<Integer> resultSet = new LinkedHashSet<>();
-        List<List<Integer>> tempSet = new ArrayList<>();
+        HashSet<CodeInfo> candidateSet = new HashSet<>();
+        List<List<Double>> tempSet = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < targetSubcodes.get(i).size(); j++) {
                 List<CodeInfo> curResult = null;
@@ -97,25 +106,26 @@ public class GetRetrievalResultServiceByUploadImp implements GetRetrievalResultB
                         break;
                 }
                 for (CodeInfo codeInfo : curResult) {
-                    int cnt = 0;
-                    for (int k = 0; k < hashcode.length(); k++) {
-                        String targetCode = codeInfo.getHashcode();
-                        if (hashcode.charAt(k) != targetCode.charAt(k)) {
-                            cnt++;
-                        }
-                    }
-                    if (cnt <= 2) {
-                        List<Integer> list = new ArrayList<>();
-                        list.add(codeInfo.getId());
-                        list.add(cnt);
-                        tempSet.add(list);
+                    int hammingDist = calcHammingDistance(hashcode.substring(0, 24), codeInfo.getHashcode().substring(0, 24))
+                            + calcHammingDistance(hashcode.substring(24, 48), codeInfo.getHashcode().substring(24, 48));
+                    codeInfo.setHammingDiastance(hammingDist);
+                    if(hammingDist<=2){
+                        candidateSet.add(codeInfo);
                     }
                 }
             }
         }
-        tempSet.sort(Comparator.comparingInt(o -> o.get(1)));
-        for (List<Integer> list : tempSet) {
-            resultSet.add(list.get(0));
+        for (CodeInfo codeInfo : candidateSet) {
+            String targetOrigincode = codeInfo.getOrigincode();
+            double euclidDist = calcEuclidDistance(origincode, targetOrigincode);
+            List<Double> list = new ArrayList<>();
+            list.add((double) codeInfo.getId());
+            list.add(euclidDist);
+            tempSet.add(list);
+        }
+        tempSet.sort(Comparator.comparingDouble(o -> o.get(1)));
+        for (List<Double> list : tempSet) {
+            resultSet.add((int) Math.floor(list.get(0)));
         }
         List<ImageInfo> imageInfoList = new ArrayList<>();
         for (int id : resultSet) {
