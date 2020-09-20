@@ -24,6 +24,21 @@ public class ImageInfoServiceImp implements ImageInfoService {
     }
 
     @Override
+    public List<ImageInfo> getDrawingImageInfoList() {
+        return imageInfoMapper.getDrawingImageInfoList();
+    }
+
+    @Override
+    public List<ImageInfo> getPeopleImageInfoList() {
+        return imageInfoMapper.getPeopleImageInfoList();
+    }
+
+    @Override
+    public List<ImageInfo> getConceptImageInfoList() {
+        return imageInfoMapper.getConceptImageInfoList();
+    }
+
+    @Override
     public List<String> getDistinctSubcode1() {
         return imageInfoMapper.getDistinctSubcode1();
     }

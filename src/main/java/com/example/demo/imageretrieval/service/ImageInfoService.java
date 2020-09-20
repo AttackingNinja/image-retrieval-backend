@@ -8,6 +8,12 @@ import java.util.List;
 public interface ImageInfoService {
     List<ImageInfo> getImageInfoList(int id);
 
+    List<ImageInfo> getDrawingImageInfoList();
+
+    List<ImageInfo> getPeopleImageInfoList();
+
+    List<ImageInfo> getConceptImageInfoList();
+
     List<String> getDistinctSubcode1();
 
     List<String> getDistinctSubcode2();

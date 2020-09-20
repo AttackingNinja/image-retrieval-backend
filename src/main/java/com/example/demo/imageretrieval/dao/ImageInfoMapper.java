@@ -48,5 +48,14 @@ public interface ImageInfoMapper {
 
     @Select("select id, hashcode, origincode from image.image_code where subcode6 = #{targetSubcode}")
     List<CodeInfo> getCodeInfo6(String targetSubcode);
+
+    @Select("select * from image.drawing")
+    List<ImageInfo> getDrawingImageInfoList();
+
+    @Select("select * from image.people")
+    List<ImageInfo> getPeopleImageInfoList();
+
+    @Select("select * from image.concept")
+    List<ImageInfo> getConceptImageInfoList();
 }
 

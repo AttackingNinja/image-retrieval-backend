@@ -133,8 +133,7 @@ public class GetRetrievalResultServiceByUploadImp implements GetRetrievalResultB
         }
         RetrievalResultInfo retrievalResultInfo = new RetrievalResultInfo();
         List<String> tagInfos = new ArrayList<>();
-        tagInfos.add("施工现场");
-        tagInfos.add("人员");
+//        tagInfos.add("人员");
 //        tagInfos.add("测试3");
         retrievalResultInfo.setImageInfos(imageInfoList);
         retrievalResultInfo.setTagInfos(tagInfos);
